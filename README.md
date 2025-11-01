@@ -1,4 +1,4 @@
-# Path-Finding Algorithms
+# AlgoViz: Interactive Pathfinding & Maze Generation
 
 Graphical simulations demonstrating the functionality of various path-finding algorithms using Python and Pygame.
 
@@ -6,15 +6,23 @@ Path-finding algorithms are essential in computing the shortest paths between po
 gaming, and network routing. This project visualizes these algorithms to enhance understanding of their operations and
 differences.
 
-## Implemented Algorithm(s)
+## Implemented Algorithms
 
-- **A\* Algorithm**: Combines heuristics and cost functions to find the shortest path efficiently.
+- **A\* Algorithm**: Combines heuristics (Manhattan distance) and cost functions to find the shortest path efficiently. Uses f(n) = g(n) + h(n) for optimal pathfinding.
+
+- **Dijkstra's Algorithm**: Uniform cost search without heuristics. Explores all directions equally, guaranteeing the shortest path.
 
 ## Features
 
-- **Interactive Visualization**: Observe each algorithm's decision-making process in real-time.
+- **Multiple Algorithms**: Switch between A\* and Dijkstra's algorithm with keyboard shortcuts.
+
+- **Interactive Visualization**: Observe each algorithm's decision-making process in real-time with animated search and path reconstruction.
 
 - **Customizable Grid**: Define start and end points, and set obstacles to simulate various scenarios.
+
+- **Maze Generation**: Generate random mazes using Wilson's algorithm (unbiased maze generation).
+
+- **Drag-to-Draw**: Click and drag to place or erase barriers for quick grid setup.
 
 ## Usage
 
@@ -45,29 +53,103 @@ pip install -r requirements.txt
 
 ## How to Use
 
-- **Left Mouse Click**: Place the start, end, or obstacle blocks.
+### Mouse Controls
+- **Left Mouse Click**: Place the start point (first click), end point (second click), or barriers (subsequent clicks).
+- **Left Mouse Drag**: Continuously place barriers while holding the button.
+- **Right Mouse Click/Drag**: Erase start, end, or barrier blocks.
 
-- **Right Mouse Click**: Reset start / end / obstacle blocks from the grid.
+### Keyboard Controls
+- **SPACE**: Run the currently selected pathfinding algorithm.
+- **1**: Switch to A\* algorithm.
+- **2**: Switch to Dijkstra's algorithm.
+- **M**: Generate a random maze using Wilson's algorithm.
+- **C**: Clear the entire grid.
+- **ESC**: Quit the application.
 
-- **SPACE**: Start the path-finding algorithm.
+## Project Structure
 
-- **c**: Clear the grid.
+```
+path-finding-algorithms/
+├── main.py                    # Application entry point and event loop
+├── visualizer.py              # UI rendering and animation
+├── algorithms/                # Pathfinding algorithm implementations
+│   ├── __init__.py
+│   ├── base_pathfinder.py    # Abstract base class (Strategy Pattern)
+│   ├── a_star.py             # A* algorithm implementation
+│   └── dijkstra.py           # Dijkstra's algorithm implementation
+├── blocks/                    # Grid cell representations
+│   ├── __init__.py
+│   ├── block.py              # Block class with position and neighbors
+│   └── block_state.py        # State Pattern for block behaviors
+├── maze/                      # Maze generation algorithms
+│   ├── __init__.py
+│   └── wilson_maze.py        # Wilson's algorithm for maze generation
+├── config/                    # Configuration and constants
+│   ├── __init__.py
+│   └── constants.py          # Display settings and color definitions
+├── tests/                     # Test suite
+│   ├── __init__.py
+│   ├── test_algorithms.py    # Algorithm tests
+│   ├── test_block.py         # Block and state tests
+│   ├── test_integration.py   # Integration tests
+│   └── test_maze.py          # Maze generation tests
+└── requirements.txt           # Python dependencies
+```
 
-## File Structure
+## Design Patterns
 
-- `main.py`: Entry point for the application; handles user interaction and visualization.
+This project implements several design patterns to ensure clean, maintainable, and extensible code:
 
-- `algorithm/`: Contains implementations of the path-finding algorithms.
+### Strategy Pattern
+- **Location**: `algorithms/base_pathfinder.py`
+- **Purpose**: Allows switching between different pathfinding algorithms (A\*, Dijkstra) at runtime.
+- **Implementation**: `BasePathfinder` is an abstract base class that defines the interface. Each algorithm (A\*, Dijkstra) implements the `find_path()` method with its own strategy.
+- **Benefit**: Easy to add new algorithms without modifying existing code.
 
-- `block.py`: Defines the `Block` class representing each cell in the grid.
+### State Pattern
+- **Location**: `blocks/block_state.py`
+- **Purpose**: Manages block behavior based on its current state (Empty, Barrier, Start, End, Open, Closed, Path).
+- **Implementation**: Each state is a class that defines its own color, walkability, and valid transitions.
+- **Benefit**: Encapsulates state-specific behavior and prevents invalid state transitions.
 
-- `ui.py`: Manages the graphical user interface components.
+## Running Tests
 
-- `CONSTANTS.txt`: Stores configuration constants such as colors and grid dimensions.
+This project includes a comprehensive test suite using pytest.
 
-- `read_file.py`: Handles reading configurations from `CONSTANTS.txt`.
+### Install Test Dependencies
+```bash
+pip install -r requirements.txt
+```
 
-- `requirements.txt`: Lists required Python packages.
+### Run All Tests
+```bash
+pytest
+```
+
+### Run Tests with Coverage Report
+```bash
+pytest --cov=algorithms --cov=blocks --cov=maze
+```
+
+### Run Specific Test Files
+```bash
+# Test pathfinding algorithms
+pytest tests/test_algorithms.py
+
+# Test block functionality
+pytest tests/test_block.py
+
+# Test maze generation
+pytest tests/test_maze.py
+
+# Run integration tests
+pytest tests/test_integration.py
+```
+
+### Run Tests in Verbose Mode
+```bash
+pytest -v
+```
 
 ## Acknowledgments
 
